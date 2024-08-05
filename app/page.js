@@ -15,7 +15,6 @@ import {
 import EditIcon from '@mui/icons-material/Edit'
 import SaveIcon from '@mui/icons-material/Save'
 import DescriptionIcon from '@mui/icons-material/Description'
-import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const style = {
   position: 'absolute',
@@ -136,11 +135,16 @@ export default function Home() {
       width="100vw"
       height="100vh"
       display={'flex'}
-      justifyContent={'center'}
       flexDirection={'column'}
       alignItems={'center'}
       gap={2}
+      padding={3}
     >
+      {/* Header */}
+      <Typography variant="h3" component="h1" align="center" gutterBottom>
+        INVENTORY TRACKER
+      </Typography>
+
       <Modal
         open={open}
         onClose={handleClose}
@@ -194,10 +198,7 @@ export default function Home() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <Button
-            variant="outlined"
-            onClick={updateDescription}
-          >
+          <Button variant="outlined" onClick={updateDescription}>
             Save
           </Button>
         </Box>
@@ -214,36 +215,35 @@ export default function Home() {
         onChange={(e) => setSearchQuery(e.target.value)}
         style={{ marginBottom: 20 }}
       />
-      <Box border={'1px solid #333'}>
-        <Box
-          width="1200px" // Increased width
-          height="100px"
-          bgcolor={'#ADD8E6'}
-          display={'flex'}
-          justifyContent={'center'}
-          alignItems={'center'}
-        >
-          <Typography variant={'h2'} color={'#333'} textAlign={'center'}>
-            Inventory Items
+      <Box border={'1px solid #333'} width="1200px">
+        <Box display="flex" justifyContent="space-between" bgcolor={'#ADD8E6'} paddingX={5} paddingY={2}>
+          <Typography variant="h5" color="#333" style={{ flex: 2 }}>
+            Item
+          </Typography>
+          <Typography variant="h5" color="#333" style={{ flex: 1, textAlign: 'center' }}>
+            Quantity
+          </Typography>
+          <Typography variant="h5" color="#333" style={{ flex: 3 }}>
+            
           </Typography>
         </Box>
-        <Stack width="1200px" height="300px" spacing={2} overflow={'auto'}>
+        <Stack width="100%" height="300px" spacing={2} overflow={'auto'}>
           {filteredInventory.map(({ name, quantity, description }) => (
             <Box
               key={name}
               width="100%"
-              minHeight="150px"
-              display={'flex'}
-              justifyContent={'space-between'}
-              alignItems={'center'}
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
               bgcolor={'#f0f0f0'}
               paddingX={5}
+              paddingY={1}
             >
-              <Typography variant={'h3'} color={'#333'} textAlign={'center'}>
+              <Typography variant={'h6'} color={'#333'} style={{ flex: 2 }}>
                 {name.charAt(0).toUpperCase() + name.slice(1)}
               </Typography>
               {editingItem === name ? (
-                <Box display="flex" alignItems="center">
+                <Box display="flex" alignItems="center" style={{ flex: 1, justifyContent: 'center' }}>
                   <TextField
                     value={newQuantity}
                     onChange={(e) => setNewQuantity(e.target.value)}
@@ -262,19 +262,37 @@ export default function Home() {
                   </IconButton>
                 </Box>
               ) : (
-                <Box display="flex" alignItems="center">
+                <Box display="flex" alignItems="center" style={{ flex: 1, justifyContent: 'center' }}>
                   <Typography
-                    variant={'h3'}
+                    variant={'h6'}
                     color={'#333'}
-                    textAlign={'center'}
+                    style={{ cursor: 'pointer' }}
                     onClick={() => {
                       setEditingItem(name)
                       setNewQuantity(quantity)
                     }}
-                    style={{ cursor: 'pointer' }}
                   >
-                    Quantity: {quantity}
+                    {quantity}
                   </Typography>
+                </Box>
+              )}
+              <Stack direction="row" spacing={2} style={{ flex: 3, justifyContent: 'flex-end' }}>
+                <Button variant="contained" onClick={() => incrementItem(name)}>
+                  Add
+                </Button>
+                <Button variant="contained" onClick={() => removeItem(name)}>
+                  Remove
+                </Button>
+                {editingItem === name ? (
+                  <IconButton
+                    onClick={() => {
+                      setEditingItem(null)
+                      setNewQuantity('')
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                ) : (
                   <IconButton
                     onClick={() => {
                       setEditingItem(name)
@@ -283,15 +301,7 @@ export default function Home() {
                   >
                     <EditIcon />
                   </IconButton>
-                </Box>
-              )}
-              <Stack direction="row" spacing={2}>
-                <Button variant="contained" onClick={() => incrementItem(name)}>
-                  Add
-                </Button>
-                <Button variant="contained" onClick={() => removeItem(name)}>
-                  Remove
-                </Button>
+                )}
                 <IconButton
                   onClick={() => handleDescriptionOpen(name, description)}
                 >
@@ -305,4 +315,3 @@ export default function Home() {
     </Box>
   )
 }
-
